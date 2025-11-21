@@ -6,7 +6,7 @@ const baseURL = `http://${HOST}:${PORT}`;
 
 export default defineConfig({
   testDir: './tests',
-  retries: 1,
+  retries: 0,
   use: {
     baseURL,
     headless: true,
