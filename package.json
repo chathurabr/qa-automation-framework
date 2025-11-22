@@ -5,7 +5,10 @@
     "test:ui": "npx playwright test --ui",
     "dev": "vite --host 127.0.0.1 --port 5173",
     "build": "vite build",
-    "test": "playwright test --headed"
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "test:trace": "playwright show-trace"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
