@@ -18,4 +18,8 @@ export default class DashboardPage {
         return this.welcomeMessage;
     }
 
+    waitForLoadState(): Promise<void> {
+        return this.page.waitForLoadState('networkidle');
+    }
+
 }

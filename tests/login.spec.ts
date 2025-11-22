@@ -2,15 +2,19 @@ import { expect, test } from './fixtures/fixtures';
 import credentials from './data/credentials.json';
 
 test.describe('Login tests', () => {
-    test('should successfully login with valid credentials and redirect to dashboard', async ({ loginPage, dashboardPage }) => {
+
+    test.beforeEach(async ({ loginPage }) => {
         await loginPage.goto();
+    });
+
+    test('should successfully login with valid credentials and redirect to dashboard', async ({ loginPage, dashboardPage }) => {
         await loginPage.login(credentials.valid.email, credentials.valid.password);
+        await dashboardPage.waitForLoadState();
         await expect(dashboardPage.getTitle()).toHaveText('Dashboard');
         await expect(dashboardPage.getWelcomeMessage()).toHaveText(`Welcome back, ${credentials.valid.email}!`); 
     });
 
-    test('should display error message for invalid credentials', async ({ loginPage }) => {
-        await loginPage.goto();
+    test('should display error message for invalid credentials', async ({ loginPage }) => { 
         await loginPage.login(credentials.invalid.email, credentials.invalid.password);
         await expect(loginPage.getErrorMessage()).toBeVisible();
         await expect(loginPage.getErrorMessage()).toHaveText('Invalid credentials');
@@ -22,7 +26,6 @@ test.describe('Login tests', () => {
       
           await test.step(`Validate invalid email: ${email} (${description})`, async () => {
       
-            await loginPage.goto();
             await loginPage.fillEmail(email);
             await loginPage.fillPassword(credentials.valid.password);
       
@@ -36,28 +39,24 @@ test.describe('Login tests', () => {
       });
 
     test('should keep login button disabled when email and password are both empty', async ({ loginPage }) => {
-        await loginPage.goto();
         await loginPage.fillEmail('');
         await loginPage.fillPassword('');
         await expect(loginPage.btnLogin).toBeDisabled();
     });
 
     test('should keep login button disabled when only email is filled and password is empty', async ({ loginPage }) => {
-        await loginPage.goto();
         await loginPage.fillEmail(credentials.valid.email);
         await loginPage.fillPassword('');
         await expect(loginPage.btnLogin).toBeDisabled();
     });
 
     test('should keep login button disabled when only password is filled and email is empty', async ({ loginPage }) => {
-        await loginPage.goto();
         await loginPage.fillEmail('');
         await loginPage.fillPassword(credentials.valid.password);
         await expect(loginPage.btnLogin).toBeDisabled();
     });
 
     test('should successfully login with trimmed leading/trailing spaces in email and password', async ({ loginPage, dashboardPage }) => {
-        await loginPage.goto();
 
         const emailWithSpaces = `   ${credentials.valid.email}   `;
         const passwordWithSpaces = `   ${credentials.valid.password}   `;
@@ -75,6 +74,7 @@ test.describe('Login tests', () => {
         await loginPage.btnLogin.click();
 
         // Dashboard should appear with the welcome message
+        await dashboardPage.waitForLoadState();
         await expect(dashboardPage.getTitle()).toHaveText('Dashboard');
         await expect(dashboardPage.getWelcomeMessage()).toHaveText(`Welcome back, ${credentials.valid.email}!`); 
     });
